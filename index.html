@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>フルオーダーウェットスーツ</title>
+<style>
+body {
+  font-family: sans-serif;
+  padding: 10px;
+}
+h1 {
+  font-size: 18px;
+  line-height: 1.4;
+}
+.section {
+  margin-top: 15px;
+}
+button {
+  margin: 3px;
+  padding: 8px;
+}
+</style>
+</head>
+<body>
+
+<h1>
+フルオーダーウェットスーツ<br>
+明治大学Roco
+</h1>
+
+<div class="section">
+<b>パーツ選択</b><br>
+<button onclick="selectPart('A')">A（腕）</button>
+<button onclick="selectPart('B')">B（体）</button>
+<button onclick="selectPart('C')">C（首胸）</button>
+<button onclick="selectPart('D')">ステッチ</button>
+</div>
+
+<div class="section">
+<b>カラー</b><br>
+<div id="colors"></div>
+</div>
+
+<div class="section">
+<b>迷彩カラー</b><br>
+<div id="camo"></div>
+</div>
+
+<div class="section">
+<b>マーク（右胸）</b><br>
+<select id="markRight">
+<option>ピーク</option>
+<option>bms</option>
+<option>ウロコ</option>
+<option>エッジb</option>
+<option>レター</option>
+</select>
+</div>
+
+<div class="section">
+<b>マーク（背中）</b><br>
+<select id="markBack">
+<option>ピーク</option>
+<option>bms</option>
+<option>エッジb</option>
+<option>レター</option>
+</select>
+</div>
+
+<div class="section">
+<b>マークカラー</b><br>
+<select id="markColor">
+<option>黒</option>
+<option>白</option>
+<option>金</option>
+<option>シルバー</option>
+<option>ガンメタ</option>
+<option>赤</option>
+<option>青</option>
+</select>
+</div>
+
+<div class="section">
+<b>現在の設定</b><br>
+<div id="result"></div>
+</div>
+
+<div class="section">
+<b>追加料金</b><br>
+<div id="price">¥0</div>
+</div>
+
+<button onclick="sendToLine()">LINEで相談する</button>
+
+<script>
+
+let currentPart = "A";
+
+let data = {
+  A: "ブラック",
+  B: "ブラック",
+  C: "ブラック",
+  D: "ホワイト"
+};
+
+const colors = [
+"ブラック","ホワイト","レッド","キャンディ","Kイエロー",
+"オレンジ","ターコイズ","ロイヤル","ネイビー",
+"プラクシス","ブラウン","ダークグレー"
+];
+
+const camo = ["カモブラック","カモグレイ","カモカーキ"];
+
+function selectPart(p){
+  currentPart = p;
+}
+
+function renderColors(){
+  let html = "";
+  colors.forEach(c=>{
+    html += `<button onclick="setColor('${c}')">${c}</button>`;
+  });
+  document.getElementById("colors").innerHTML = html;
+}
+
+function renderCamo(){
+  let html = "";
+  camo.forEach(c=>{
+    html += `<button onclick="setCamo('${c}')">${c}</button>`;
+  });
+  document.getElementById("camo").innerHTML = html;
+}
+
+function setColor(c){
+  data[currentPart] = c;
+  update();
+}
+
+function setCamo(c){
+  if(currentPart === "A"){
+    data.A = c;
+  } else if(currentPart === "C"){
+    data.C = c;
+  } else {
+    alert("このパーツには使えません");
+  }
+  update();
+}
+
+function calcPrice(){
+  let p = 0;
+  if(data.A.includes("カモ")) p += 4500;
+  if(data.C.includes("カモ")) p += 3500;
+  return p;
+}
+
+function update(){
+  document.getElementById("result").innerHTML =
+  `A:${data.A}<br>B:${data.B}<br>C:${data.C}<br>D:${data.D}`;
+
+  document.getElementById("price").innerText =
+  "¥" + calcPrice().toLocaleString();
+}
+
+function sendToLine(){
+let text =
+`【ウェットスーツカラー相談】
+
+Aベース：${data.A}
+Bベース：${data.B}
+Cベース：${data.C}
+ステッチ：${data.D}
+
+追加料金：¥${calcPrice().toLocaleString()}
+
+右胸マーク：${document.getElementById("markRight").value}（${document.getElementById("markColor").value}）
+背中マーク：${document.getElementById("markBack").value}（${document.getElementById("markColor").value}）
+`;
+
+let url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+window.open(url);
+}
+
+renderColors();
+renderCamo();
+update();
+
+</script>
+
+</body>
+</html>
