@@ -6,206 +6,103 @@
 <title>ウェットスーツシミュレーター</title>
 
 <style>
-body {
+body{
   font-family: sans-serif;
-  padding: 10px;
+  text-align:center;
 }
 
-h1 {
-  font-size: 20px;
+/* ===== スーツ表示 ===== */
+.suit-wrap{
+  position:relative;
+  width:300px;
+  margin:0 auto;
 }
 
-.section {
-  margin-top: 20px;
+.suit-wrap img{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
 }
 
-button {
-  margin: 4px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
+/* 重なり順 */
+#base{z-index:1;}
+#partB{z-index:2;}
+#partC{z-index:3;}
+#partA{z-index:4;}
+#mark{z-index:5;}
+
+.controls{
+  margin-top:320px;
 }
 
-.suit {
-  width: 800px;
-  max-width: 100%;
+button{
+  margin:5px;
+  padding:10px 15px;
+  border-radius:20px;
+  border:none;
+  background:#eee;
 }
-
-/* マーク表示 */
-.mark {
-  margin-top: 10px;
-  background: black;
-  display: inline-block;
-  padding: 5px;
-}
-
-.mark img {
-  width: 120px;
-}
-
 </style>
 </head>
 
 <body>
 
-<h1>
-フルオーダーウェットスーツ<br>
-明治大学Roco
-</h1>
+<h2>ウェットスーツシミュレーター</h2>
 
-<div class="section">
-  <img id="suit" src="suit.png" class="suit">
+<!-- ===== 表示 ===== -->
+<div class="suit-wrap">
+  <img id="base" src="base.png">
+  <img id="partB" src="partB_front.png">
+  <img id="partC" src="partC_front.png">
+  <img id="partA" src="partA.png">
+  <img id="mark" src="">
 </div>
 
-<div class="section">
-<b>パーツ選択</b><br>
-<button onclick="setPart('A')">A（袖）</button>
-<button onclick="setPart('B')">B（ボディ）</button>
-<button onclick="setPart('C')">C（ライン）</button>
-<button onclick="setPart('D')">D（ステッチ）</button>
-</div>
+<!-- ===== 操作 ===== -->
+<div class="controls">
 
-<div class="section">
-<b>カラー</b><br>
-<div id="colorButtons"></div>
-</div>
+<h3>A（袖）</h3>
+<button onclick="changeA('black')">ブラック</button>
+<button onclick="changeA('pink')">ピンク</button>
+<button onclick="changeA('blue')">ブルー</button>
 
-<div class="section">
-<b>マーク（右胸）</b><br>
-<select onchange="changeRight(this.value)">
-  <option value="bms">bms</option>
-  <option value="biarms">biarms</option>
-  <option value="edgeb">edgeb</option>
-  <option value="letter">letter</option>
-</select>
+<h3>B（ボディ）</h3>
+<button onclick="changeB('black')">ブラック</button>
+<button onclick="changeB('red')">レッド</button>
+<button onclick="changeB('blue')">ブルー</button>
 
-<select onchange="changeMarkColor('right',this.value)">
-  <option value="white">ホワイト</option>
-  <option value="red">レッド</option>
-  <option value="gold">ゴールド</option>
-  <option value="silver">シルバー</option>
-</select>
+<h3>C（ライン）</h3>
+<button onclick="changeC('black')">ブラック</button>
+<button onclick="changeC('yellow')">イエロー</button>
 
-<div class="mark">
-  <img id="rightMark" src="bms.png">
-</div>
-</div>
+<h3>マーク</h3>
+<button onclick="setMark('bms.png')">BMS</button>
+<button onclick="setMark('letter.png')">レター</button>
+<button onclick="setMark('edgeb.png')">エッジ</button>
 
-<div class="section">
-<b>マーク（背中）</b><br>
-<select onchange="changeBack(this.value)">
-  <option value="bms">bms</option>
-  <option value="biarms">biarms</option>
-  <option value="edgeb">edgeb</option>
-  <option value="letter">letter</option>
-</select>
-
-<select onchange="changeMarkColor('back',this.value)">
-  <option value="white">ホワイト</option>
-  <option value="red">レッド</option>
-  <option value="gold">ゴールド</option>
-  <option value="silver">シルバー</option>
-</select>
-
-<div class="mark">
-  <img id="backMark" src="bms.png">
-</div>
-</div>
-
-<div class="section">
-<b>現在の設定</b><br>
-<div id="result"></div>
 </div>
 
 <script>
-let currentPart = "A";
 
-let data = {
-  A:"ブラック",
-  B:"ブラック",
-  C:"ブラック",
-  D:"ホワイト"
-};
-
-const colors = [
-"ブラック","ホワイト","レッド","ブルー",
-"イエロー","ピンク","グレー","ネイビー",
-"クールグレイ","ダークグレイ","ベビーピンク",
-"パウダー","マルベリー","Kイエロー","Kブルー"
-];
-
-function setPart(p){
-  currentPart = p;
+/* ===== パーツ変更 ===== */
+function changeA(color){
+  document.getElementById("partA").src = "partA.png";
 }
 
-function renderColors(){
-  let html="";
-  colors.forEach(c=>{
-    html += `<button onclick="setColor('${c}')">${c}</button>`;
-  });
-  document.getElementById("colorButtons").innerHTML = html;
+function changeB(color){
+  document.getElementById("partB").src = "partB_front.png";
 }
 
-function setColor(c){
-  data[currentPart] = c;
-  update();
-  updateSuit();
+function changeC(color){
+  document.getElementById("partC").src = "partC_front.png";
 }
 
-function update(){
-  document.getElementById("result").innerHTML =
-  `Aベース：${data.A}<br>
-   Bベース：${data.B}<br>
-   ライン：${data.C}<br>
-   ステッチ：${data.D}`;
+/* ===== マーク ===== */
+function setMark(file){
+  document.getElementById("mark").src = file;
 }
 
-function updateSuit(){
-  const suit = document.getElementById("suit");
-  const c = data.B;
-
-  if(c==="ブラック") suit.style.filter="brightness(0.5)";
-  else if(c==="ホワイト") suit.style.filter="brightness(1.2)";
-  else if(c==="レッド") suit.style.filter="sepia(1) hue-rotate(-20deg)";
-  else if(c==="ブルー") suit.style.filter="sepia(1) hue-rotate(180deg)";
-  else if(c==="Kブルー") suit.style.filter="sepia(1) hue-rotate(200deg)";
-  else if(c==="Kイエロー") suit.style.filter="sepia(1) hue-rotate(10deg)";
-  else suit.style.filter="none";
-}
-
-/* マーク */
-function getFile(name){
-  return name + ".png";
-}
-
-function changeRight(val){
-  document.getElementById("rightMark").src = getFile(val);
-}
-
-function changeBack(val){
-  document.getElementById("backMark").src = getFile(val);
-}
-
-/* マークカラー */
-function changeMarkColor(type,color){
-  const img = type==="right"
-    ? document.getElementById("rightMark")
-    : document.getElementById("backMark");
-
-  if(color==="red"){
-    img.style.filter="sepia(1) hue-rotate(-20deg)";
-  }else if(color==="gold"){
-    img.style.filter="sepia(1) saturate(5) hue-rotate(20deg)";
-  }else if(color==="silver"){
-    img.style.filter="grayscale(1)";
-  }else{
-    img.style.filter="none";
-  }
-}
-
-renderColors();
-update();
-updateSuit();
 </script>
 
 </body>
