@@ -1,133 +1,257 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>フルオーダーウェットスーツ</title>
-<style>
-body { font-family: sans-serif; padding: 10px; }
-h1 { font-size: 18px; }
-.section { margin-top: 15px; }
-button { margin: 3px; padding: 8px; }
-img { background: #000; } /* 白ロゴ見やすく */
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フルオーダーウェットスーツ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 10px;
+      margin: 0;
+      background: #fff;
+      color: #111;
+    }
+
+    h1 {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .section {
+      margin-top: 15px;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .suit-image {
+      width: 520px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    button {
+      margin: 3px;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    select {
+      padding: 8px;
+      margin-top: 5px;
+      width: 100%;
+      max-width: 260px;
+    }
+
+    .box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .mark-preview {
+      margin-top: 10px;
+      background: #000;
+      display: inline-block;
+      padding: 8px;
+      border-radius: 6px;
+      min-width: 120px;
+      min-height: 50px;
+    }
+
+    .mark-preview img {
+      max-width: 120px;
+      max-height: 50px;
+      display: block;
+    }
+
+    #result {
+      line-height: 1.8;
+    }
+
+    #price {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-<h1>
-フルオーダーウェットスーツ<br>
-明治大学Roco
-</h1>
+  <h1>
+    フルオーダーウェットスーツ<br>
+    明治大学Roco
+  </h1>
 
-<div class="section" style="text-align:center;">
-<img src="suit.png" width="500">
-</div>
+  <div class="section center">
+    <img src="suit.png" alt="ウェットスーツ" class="suit-image">
+  </div>
 
-<div class="section">
-<b>パーツ選択</b><br>
-<button onclick="selectPart('A')">A（袖）</button>
-<button onclick="selectPart('B')">B（ボディ）</button>
-<button onclick="selectPart('C')">C（首胸）</button>
-<button onclick="selectPart('D')">D（ステッチ）</button>
-</div>
+  <div class="section">
+    <b>パーツ選択</b><br>
+    <button id="btnA" onclick="selectPart('A')">A（袖）</button>
+    <button id="btnB" onclick="selectPart('B')">B（ボディ）</button>
+    <button id="btnC" onclick="selectPart('C')">C（首胸）</button>
+    <button id="btnD" onclick="selectPart('D')">D（ステッチ）</button>
+  </div>
 
-<div class="section">
-<b>カラー</b><br>
-<div id="colors"></div>
-</div>
+  <div class="section">
+    <b>カラー</b><br>
+    <div id="colors"></div>
+  </div>
 
-<div class="section">
-<b>マーク（右胸）</b><br>
-<select id="markRight" onchange="changeMarkRight()">
-<option>bms</option>
-<option>ウロコ</option>
-<option>エッジb</option>
-<option>レター</option>
-</select>
+  <div class="section">
+    <b>マーク（右胸）</b><br>
+    <select id="markRight" onchange="changeMarkRight()">
+      <option value="なし">なし</option>
+      <option value="bms">bms</option>
+      <option value="ウロコ">ウロコ</option>
+      <option value="biarms">ピーク</option>
+      <option value="エッジb">エッジb</option>
+      <option value="レター">レター</option>
+    </select>
 
-<div>
-<img id="markRightImg" src="bms.png" width="100">
-</div>
-</div>
+    <div class="mark-preview">
+      <img id="markRightImg" src="" alt="">
+    </div>
+  </div>
 
-<div class="section">
-<b>マーク（背中）</b><br>
-<select id="markBack" onchange="changeMarkBack()">
-<option>bms</option>
-<option>ウロコ</option>
-<option>エッジb</option>
-<option>レター</option>
-</select>
+  <div class="section">
+    <b>マーク（背中）</b><br>
+    <select id="markBack" onchange="changeMarkBack()">
+      <option value="なし">なし</option>
+      <option value="bms">bms</option>
+      <option value="ウロコ">ウロコ</option>
+      <option value="エッジb">エッジb</option>
+      <option value="レター">レター</option>
+    </select>
 
-<div>
-<img id="markBackImg" src="bms.png" width="100">
-</div>
-</div>
+    <div class="mark-preview">
+      <img id="markBackImg" src="" alt="">
+    </div>
+  </div>
 
-<div class="section">
-<b>現在の設定</b><br>
-<div id="result"></div>
-</div>
+  <div class="section box">
+    <b>現在の設定</b><br>
+    <div id="result"></div>
+  </div>
 
-<script>
+  <div class="section box">
+    <b>追加料金</b><br>
+    <div id="price">¥0</div>
+  </div>
 
-let currentPart = "A";
+  <div class="section">
+    <button onclick="sendToLine()">LINEで相談する</button>
+  </div>
 
-let data = {
-A: "ブラック",
-B: "ブラック",
-C: "ブラック",
-D: "ホワイト"
-};
+  <script>
+    let currentPart = "A";
 
-const colors = ["ブラック","ホワイト","レッド","ブルー"];
+    let data = {
+      A: "ブラック",
+      B: "ブラック",
+      C: "ブラック",
+      D: "ホワイト"
+    };
 
-function selectPart(p){
-currentPart = p;
-}
+    const colors = [
+      "ブラック", "ホワイト", "レッド", "ブルー"
+    ];
 
-function renderColors(){
-let html = "";
-colors.forEach(c=>{
-html += `<button onclick="setColor('${c}')">${c}</button>`;
-});
-document.getElementById("colors").innerHTML = html;
-}
+    function selectPart(p) {
+      currentPart = p;
+      updatePartButtons();
+    }
 
-function setColor(c){
-data[currentPart] = c;
-update();
-}
+    function updatePartButtons() {
+      document.getElementById("btnA").classList.remove("active");
+      document.getElementById("btnB").classList.remove("active");
+      document.getElementById("btnC").classList.remove("active");
+      document.getElementById("btnD").classList.remove("active");
+      document.getElementById("btn" + currentPart).classList.add("active");
+    }
 
-function update(){
-document.getElementById("result").innerHTML =
-`Aベース：${data.A}<br>
-Bベース：${data.B}<br>
-ライン：${data.C}<br>
-ステッチ：${data.D}`;
-}
+    function renderColors() {
+      let html = "";
+      colors.forEach(c => {
+        html += `<button onclick="setColor('${c}')">${c}</button>`;
+      });
+      document.getElementById("colors").innerHTML = html;
+    }
 
-function changeMarkRight(){
-let val = document.getElementById("markRight").value;
-document.getElementById("markRightImg").src = getFile(val);
-}
+    function setColor(c) {
+      data[currentPart] = c;
+      update();
+    }
 
-function changeMarkBack(){
-let val = document.getElementById("markBack").value;
-document.getElementById("markBackImg").src = getFile(val);
-}
+    function update() {
+      document.getElementById("result").innerHTML =
+        `Aベース：${data.A}<br>` +
+        `Bベース：${data.B}<br>` +
+        `ライン：${data.C}<br>` +
+        `ステッチ：${data.D}`;
 
-function getFile(name){
-if(name === "bms") return "bms.png";
-if(name === "ウロコ") return "uroko.png";
-if(name === "エッジb") return "edgeb.png";
-if(name === "レター") return "letter.png";
-return "bms.png";
-}
+      document.getElementById("price").innerText = "¥0";
+    }
 
-renderColors();
-update();
+    function getFile(name) {
+      if (name === "bms") return "bms.png";
+      if (name === "ウロコ") return "uroko.png";
+      if (name === "biarms") return "biarms.png";
+      if (name === "エッジb") return "edgeb.png";
+      if (name === "レター") return "letter.png";
+      return "";
+    }
 
-</script>
+    function changeMarkRight() {
+      const val = document.getElementById("markRight").value;
+      const file = getFile(val);
+      document.getElementById("markRightImg").src = file;
+      document.getElementById("markRightImg").style.display = file ? "block" : "none";
+    }
+
+    function changeMarkBack() {
+      const val = document.getElementById("markBack").value;
+      const file = getFile(val);
+      document.getElementById("markBackImg").src = file;
+      document.getElementById("markBackImg").style.display = file ? "block" : "none";
+    }
+
+    function sendToLine() {
+      let text =
+`【ウェットスーツカラー相談】
+
+Aベース：${data.A}
+Bベース：${data.B}
+ライン：${data.C}
+ステッチ：${data.D}
+
+右胸マーク：${document.getElementById("markRight").value}
+背中マーク：${document.getElementById("markBack").value}`;
+
+      let url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+      window.open(url);
+    }
+
+    renderColors();
+    updatePartButtons();
+    update();
+    changeMarkRight();
+    changeMarkBack();
+  </script>
 
 </body>
 </html>
