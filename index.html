@@ -12,33 +12,37 @@ body {
 }
 
 h1 {
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .section {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 button {
-  margin: 3px;
-  padding: 8px;
+  margin: 4px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
 }
 
 .suit {
-  width: 520px;
+  width: 800px;
   max-width: 100%;
 }
 
+/* マーク表示 */
 .mark {
+  margin-top: 10px;
   background: black;
   display: inline-block;
   padding: 5px;
-  margin-top: 5px;
 }
 
 .mark img {
   width: 120px;
 }
+
 </style>
 </head>
 
@@ -50,46 +54,61 @@ button {
 </h1>
 
 <div class="section">
-<img src="suit.png" class="suit">
+  <img id="suit" src="suit.png" class="suit">
 </div>
 
 <div class="section">
 <b>パーツ選択</b><br>
-<button onclick="selectPart('A')">A（袖）</button>
-<button onclick="selectPart('B')">B（ボディ）</button>
-<button onclick="selectPart('C')">C（首胸）</button>
-<button onclick="selectPart('D')">D（ステッチ）</button>
+<button onclick="setPart('A')">A（袖）</button>
+<button onclick="setPart('B')">B（ボディ）</button>
+<button onclick="setPart('C')">C（ライン）</button>
+<button onclick="setPart('D')">D（ステッチ）</button>
 </div>
 
 <div class="section">
 <b>カラー</b><br>
-<div id="colors"></div>
+<div id="colorButtons"></div>
 </div>
 
 <div class="section">
 <b>マーク（右胸）</b><br>
-<select id="markRight" onchange="changeMarkRight()">
-<option value="bms">bms</option>
-<option value="biarms">ピーク</option>
-<option value="edgeb">エッジb</option>
-<option value="letter">レター</option>
+<select onchange="changeRight(this.value)">
+  <option value="bms">bms</option>
+  <option value="biarms">biarms</option>
+  <option value="edgeb">edgeb</option>
+  <option value="letter">letter</option>
+</select>
+
+<select onchange="changeMarkColor('right',this.value)">
+  <option value="white">ホワイト</option>
+  <option value="red">レッド</option>
+  <option value="gold">ゴールド</option>
+  <option value="silver">シルバー</option>
 </select>
 
 <div class="mark">
-<img id="rightImg" src="bms.png">
+  <img id="rightMark" src="bms.png">
 </div>
 </div>
 
 <div class="section">
 <b>マーク（背中）</b><br>
-<select id="markBack" onchange="changeMarkBack()">
-<option value="bms">bms</option>
-<option value="edgeb">エッジb</option>
-<option value="letter">レター</option>
+<select onchange="changeBack(this.value)">
+  <option value="bms">bms</option>
+  <option value="biarms">biarms</option>
+  <option value="edgeb">edgeb</option>
+  <option value="letter">letter</option>
+</select>
+
+<select onchange="changeMarkColor('back',this.value)">
+  <option value="white">ホワイト</option>
+  <option value="red">レッド</option>
+  <option value="gold">ゴールド</option>
+  <option value="silver">シルバー</option>
 </select>
 
 <div class="mark">
-<img id="backImg" src="bms.png">
+  <img id="backMark" src="bms.png">
 </div>
 </div>
 
@@ -102,29 +121,35 @@ button {
 let currentPart = "A";
 
 let data = {
-  A: "ブラック",
-  B: "ブラック",
-  C: "ブラック",
-  D: "ホワイト"
+  A:"ブラック",
+  B:"ブラック",
+  C:"ブラック",
+  D:"ホワイト"
 };
 
-const colors = ["ブラック","ホワイト","レッド","ブルー"];
+const colors = [
+"ブラック","ホワイト","レッド","ブルー",
+"イエロー","ピンク","グレー","ネイビー",
+"クールグレイ","ダークグレイ","ベビーピンク",
+"パウダー","マルベリー","Kイエロー","Kブルー"
+];
 
-function selectPart(p){
+function setPart(p){
   currentPart = p;
 }
 
 function renderColors(){
-  let html = "";
+  let html="";
   colors.forEach(c=>{
     html += `<button onclick="setColor('${c}')">${c}</button>`;
   });
-  document.getElementById("colors").innerHTML = html;
+  document.getElementById("colorButtons").innerHTML = html;
 }
 
 function setColor(c){
   data[currentPart] = c;
   update();
+  updateSuit();
 }
 
 function update(){
@@ -135,26 +160,52 @@ function update(){
    ステッチ：${data.D}`;
 }
 
+function updateSuit(){
+  const suit = document.getElementById("suit");
+  const c = data.B;
+
+  if(c==="ブラック") suit.style.filter="brightness(0.5)";
+  else if(c==="ホワイト") suit.style.filter="brightness(1.2)";
+  else if(c==="レッド") suit.style.filter="sepia(1) hue-rotate(-20deg)";
+  else if(c==="ブルー") suit.style.filter="sepia(1) hue-rotate(180deg)";
+  else if(c==="Kブルー") suit.style.filter="sepia(1) hue-rotate(200deg)";
+  else if(c==="Kイエロー") suit.style.filter="sepia(1) hue-rotate(10deg)";
+  else suit.style.filter="none";
+}
+
+/* マーク */
 function getFile(name){
-  if(name === "bms") return "bms.png";
-  if(name === "biarms") return "biarms.png";
-  if(name === "edgeb") return "edgeb.png";
-  if(name === "letter") return "letter.png";
-  return "bms.png";
+  return name + ".png";
 }
 
-function changeMarkRight(){
-  const val = document.getElementById("markRight").value;
-  document.getElementById("rightImg").src = getFile(val);
+function changeRight(val){
+  document.getElementById("rightMark").src = getFile(val);
 }
 
-function changeMarkBack(){
-  const val = document.getElementById("markBack").value;
-  document.getElementById("backImg").src = getFile(val);
+function changeBack(val){
+  document.getElementById("backMark").src = getFile(val);
+}
+
+/* マークカラー */
+function changeMarkColor(type,color){
+  const img = type==="right"
+    ? document.getElementById("rightMark")
+    : document.getElementById("backMark");
+
+  if(color==="red"){
+    img.style.filter="sepia(1) hue-rotate(-20deg)";
+  }else if(color==="gold"){
+    img.style.filter="sepia(1) saturate(5) hue-rotate(20deg)";
+  }else if(color==="silver"){
+    img.style.filter="grayscale(1)";
+  }else{
+    img.style.filter="none";
+  }
 }
 
 renderColors();
 update();
+updateSuit();
 </script>
 
 </body>
