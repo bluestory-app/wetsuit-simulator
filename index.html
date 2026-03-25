@@ -70,7 +70,6 @@ button {
 <b>マーク（右胸）</b><br>
 <select id="markRight" onchange="changeMarkRight()">
 <option value="bms">bms</option>
-<option value="uroko">ウロコ</option>
 <option value="biarms">ピーク</option>
 <option value="edgeb">エッジb</option>
 <option value="letter">レター</option>
@@ -85,7 +84,6 @@ button {
 <b>マーク（背中）</b><br>
 <select id="markBack" onchange="changeMarkBack()">
 <option value="bms">bms</option>
-<option value="uroko">ウロコ</option>
 <option value="edgeb">エッジb</option>
 <option value="letter">レター</option>
 </select>
@@ -101,7 +99,6 @@ button {
 </div>
 
 <script>
-
 let currentPart = "A";
 
 let data = {
@@ -138,11 +135,8 @@ function update(){
    ステッチ：${data.D}`;
 }
 
-/* ===== ここ重要 ===== */
-
 function getFile(name){
   if(name === "bms") return "bms.png";
-  if(name === "uroko") return "EB0E9C71-B152-46C1-9263-7CA02E7604BA.png";
   if(name === "biarms") return "biarms.png";
   if(name === "edgeb") return "edgeb.png";
   if(name === "letter") return "letter.png";
@@ -161,7 +155,6 @@ function changeMarkBack(){
 
 renderColors();
 update();
-
 </script>
 
 </body>
