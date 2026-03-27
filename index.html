@@ -172,6 +172,7 @@
   <div class="wrap">
     <h1>ウェットスーツシミュレーター</h1>
 
+    <!-- 1. ウェットスーツ画像 -->
     <div class="card">
       <div class="viewer" id="viewer">
         <img src="base.png" class="base-layer" alt="base">
@@ -180,53 +181,37 @@
         <img id="partB" src="partB.png" class="part-layer" alt="partB">
         <img id="partC" src="partC.png" class="part-layer" alt="partC">
 
-        <!-- 胸マーク 上に移動 -->
-        <div id="chestMarkWrap" class="mark-layer" style="left: 22.5%; top: 20.5%; width: 9%;">
+        <!-- 胸マーク -->
+        <div id="chestMarkWrap" class="mark-layer" style="left: 16.8%; top: 22.8%; width: 8.5%;">
           <img id="chestMarkImg" src="bms.png" alt="chest mark">
         </div>
 
-        <!-- 背中マーク 上に移動 -->
-        <div id="backMarkWrap" class="mark-layer" style="left: 72%; top: 22.5%; width: 10%;">
+        <!-- 背中マーク -->
+        <div id="backMarkWrap" class="mark-layer" style="left: 67.3%; top: 23.5%; width: 8.8%;">
           <img id="backMarkImg" src="bms.png" alt="back mark">
         </div>
       </div>
     </div>
 
-    <!-- 現在の設定を上へ移動 -->
-    <div class="card">
-      <div class="section-title">現在の設定</div>
-      <div id="result" class="result"></div>
-    </div>
-
-    <div class="card">
-      <div class="section-title">お客様情報</div>
-      <div class="form-grid">
-        <div>
-          <div class="sub-title">名前</div>
-          <input id="customerName" type="text" placeholder="名前を入力">
-        </div>
-        <div>
-          <div class="sub-title">性別</div>
-          <select id="gender" onchange="renderResult()">
-            <option value="">選択してください</option>
-            <option value="男性">男性</option>
-            <option value="女性">女性</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
+    <!-- 2. Aカラー -->
     <div class="card">
       <div class="section-title">Aカラー</div>
       <div class="btn-row" id="aButtons"></div>
+    </div>
 
-      <div class="section-title" style="margin-top:20px;">Bカラー</div>
+    <!-- 3. Bカラー -->
+    <div class="card">
+      <div class="section-title">Bカラー</div>
       <div class="btn-row" id="bButtons"></div>
+    </div>
 
-      <div class="section-title" style="margin-top:20px;">Cカラー</div>
+    <!-- 4. Cカラー -->
+    <div class="card">
+      <div class="section-title">Cカラー</div>
       <div class="btn-row" id="cButtons"></div>
     </div>
 
+    <!-- 5. 胸マーク -->
     <div class="card">
       <div class="section-title">胸マーク</div>
       <div class="mark-box">
@@ -254,8 +239,11 @@
           <img id="chestMarkPreview" src="bms.png" alt="chest preview">
         </div>
       </div>
+    </div>
 
-      <div class="section-title" style="margin-top:20px;">背中マーク</div>
+    <!-- 6. 背中マーク -->
+    <div class="card">
+      <div class="section-title">背中マーク</div>
       <div class="mark-box">
         <div>
           <select id="backMark" onchange="updateMarks()">
@@ -283,6 +271,32 @@
       </div>
     </div>
 
+    <!-- 7. お客様情報 -->
+    <div class="card">
+      <div class="section-title">お客様情報</div>
+      <div class="form-grid">
+        <div>
+          <div class="sub-title">名前</div>
+          <input id="customerName" type="text" placeholder="名前を入力">
+        </div>
+        <div>
+          <div class="sub-title">性別</div>
+          <select id="gender" onchange="renderResult()">
+            <option value="">選択してください</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. 現在の設定 -->
+    <div class="card">
+      <div class="section-title">現在の設定</div>
+      <div id="result" class="result"></div>
+    </div>
+
+    <!-- 9. 保存・LINE送信 -->
     <div class="card">
       <div class="action-row">
         <button type="button" onclick="saveSetting()">保存</button>
