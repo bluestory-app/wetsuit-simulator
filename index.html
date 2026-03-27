@@ -1,167 +1,71 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ウェットスーツシミュレーター</title>
+<div class="canvas">
+  <img src="base.png" class="base">
+
+  <img id="partA" src="partA.png">
+  <img id="partB" src="partB.png">
+  <img id="partC" src="partC.png">
+
+  <img id="markChest">
+  <img id="markBack">
+</div>
+
+<div>
+  <h3>Aカラー</h3>
+  <button onclick="setColor('A','red')">赤</button>
+  <button onclick="setColor('A','blue')">青</button>
+
+  <h3>Bカラー</h3>
+  <button onclick="setColor('B','black')">黒</button>
+  <button onclick="setColor('B','white')">白</button>
+
+  <h3>Cカラー</h3>
+  <button onclick="setColor('C','pink')">ピンク</button>
+  <button onclick="setColor('C','green')">緑</button>
+
+  <h3>胸マーク</h3>
+  <button onclick="setMark('bms.png')">bms</button>
+  <button onclick="setMark('biarms.png')">biarms</button>
+
+  <h3>背中マーク</h3>
+  <button onclick="setBackMark('bms.png')">bms</button>
+  <button onclick="setBackMark('edgeb.png')">edgeb</button>
+</div>
+
+<script>
+function setColor(part, color) {
+  document.getElementById("part"+part).style.filter =
+    color === "red" ? "hue-rotate(0deg)" :
+    color === "blue" ? "hue-rotate(200deg)" :
+    color === "black" ? "brightness(0.3)" :
+    color === "white" ? "brightness(1.8)" :
+    color === "pink" ? "hue-rotate(300deg)" :
+    "hue-rotate(100deg)";
+}
+
+function setMark(src) {
+  document.getElementById("markChest").src = src;
+}
+
+function setBackMark(src) {
+  document.getElementById("markBack").src = src;
+}
+</script>
 
 <style>
-body {
-  margin: 0;
-  padding: 16px;
-  font-family: sans-serif;
-  background: #f5f5f5;
-}
-
-.stage {
+.canvas {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  height: 880px;
-  margin: 0 auto;
-  background: #eee;
+  max-width: 400px;
 }
 
-/* ここで完全固定 */
-.stage img {
+.canvas img {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
 }
 
-.hide { display: none; }
-.show { display: block; }
-
-button {
-  margin: 5px;
-  padding: 10px 14px;
-  border-radius: 20px;
-  border: none;
-  background: #eee;
-}
-
-.active {
-  background: #cce5ff;
-}
-
-#result {
-  margin-top: 10px;
-  line-height: 1.8;
-  white-space: pre-line;
+.base {
+  position: relative;
 }
 </style>
-</head>
-
-<body>
-
-<h2>ウェットスーツ</h2>
-
-<button onclick="switchView('front')">前</button>
-<button onclick="switchView('back')">後ろ</button>
-
-<div class="stage">
-
-<!-- FRONT -->
-<img id="baseFront" class="show" src="base_front.png">
-<img id="partBFront" class="show" src="partB_front.png">
-<img id="partCFront" class="show" src="partC_front.png">
-<img id="partAFront" class="show" src="partA_front.png">
-<img id="partDFront" class="show" src="partD_front.png">
-
-<!-- BACK -->
-<img id="baseBack" class="hide" src="base_back.png">
-<img id="partBBack" class="hide" src="partB_back.png">
-<img id="partCBack" class="hide" src="partC_back.png">
-<img id="partABack" class="hide" src="partA_back.png">
-<img id="partDBack" class="hide" src="partD_back.png">
-
-</div>
-
-<h3>パーツ</h3>
-<button onclick="selectPart('A')">A</button>
-<button onclick="selectPart('B')">B</button>
-<button onclick="selectPart('C')">C</button>
-<button onclick="selectPart('D')">D</button>
-
-<h3>カラー</h3>
-<div id="colors"></div>
-
-<div id="result"></div>
-
-<button onclick="save()">保存</button>
-<button onclick="sendLine()">LINE送信</button>
-
-<script>
-let currentPart = 'A';
-
-const data = {
-  A: 'ブラック',
-  B: 'ブラック',
-  C: 'ブラック',
-  D: 'ホワイト'
-};
-
-const colors = [
-'ブラック','ホワイト','レッド','キャンディ','Kイエロー','Kオレンジ','オレンジ',
-'ターコイズ','ロイヤル','ネイビー','ソリッドブルー','プラクシス',
-'ブラウン','ダークグレイ','クールグレイ','オリーブ','ペブル','サンド',
-'メランジBK','メランジ青','ベビーピンク','マルベリー','キラ','ピスタチオ'
-];
-
-function switchView(view){
-  const f = ['baseFront','partBFront','partCFront','partAFront','partDFront'];
-  const b = ['baseBack','partBBack','partCBack','partABack','partDBack'];
-
-  if(view==='front'){
-    f.forEach(id=>document.getElementById(id).className='show');
-    b.forEach(id=>document.getElementById(id).className='hide');
-  } else {
-    f.forEach(id=>document.getElementById(id).className='hide');
-    b.forEach(id=>document.getElementById(id).className='show');
-  }
-}
-
-function selectPart(p){
-  currentPart = p;
-}
-
-function renderColors(){
-  const el = document.getElementById('colors');
-  colors.forEach(c=>{
-    const btn = document.createElement('button');
-    btn.textContent = c;
-    btn.onclick = ()=>setColor(c);
-    el.appendChild(btn);
-  });
-}
-
-function setColor(c){
-  data[currentPart]=c;
-  renderResult();
-}
-
-function renderResult(){
-  document.getElementById('result').textContent =
-`A：${data.A}
-B：${data.B}
-C：${data.C}
-D：${data.D}`;
-}
-
-function save(){
-  localStorage.setItem('wetsuit', JSON.stringify(data));
-  alert('保存OK');
-}
-
-function sendLine(){
-  const text = `A:${data.A}\nB:${data.B}\nC:${data.C}\nD:${data.D}`;
-  window.open('https://line.me/R/msg/text/?'+encodeURIComponent(text));
-}
-
-renderColors();
-renderResult();
-</script>
-
-</body>
-</html>
