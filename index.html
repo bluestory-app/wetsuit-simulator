@@ -1,71 +1,433 @@
-<div class="canvas">
-  <img src="base.png" class="base">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ウェットスーツシミュレーター</title>
+  <style>
+    * { box-sizing: border-box; }
 
-  <img id="partA" src="partA.png">
-  <img id="partB" src="partB.png">
-  <img id="partC" src="partC.png">
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: sans-serif;
+      background: #f5f5f5;
+      color: #111;
+    }
 
-  <img id="markChest">
-  <img id="markBack">
-</div>
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-<div>
-  <h3>Aカラー</h3>
-  <button onclick="setColor('A','red')">赤</button>
-  <button onclick="setColor('A','blue')">青</button>
+    h1 {
+      margin: 0 0 16px;
+      font-size: 28px;
+      line-height: 1.4;
+    }
 
-  <h3>Bカラー</h3>
-  <button onclick="setColor('B','black')">黒</button>
-  <button onclick="setColor('B','white')">白</button>
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
 
-  <h3>Cカラー</h3>
-  <button onclick="setColor('C','pink')">ピンク</button>
-  <button onclick="setColor('C','green')">緑</button>
+    .viewer {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
 
-  <h3>胸マーク</h3>
-  <button onclick="setMark('bms.png')">bms</button>
-  <button onclick="setMark('biarms.png')">biarms</button>
+    .viewer img {
+      width: 100%;
+      display: block;
+    }
 
-  <h3>背中マーク</h3>
-  <button onclick="setBackMark('bms.png')">bms</button>
-  <button onclick="setBackMark('edgeb.png')">edgeb</button>
-</div>
+    .base-layer {
+      position: relative;
+      z-index: 1;
+    }
 
-<script>
-function setColor(part, color) {
-  document.getElementById("part"+part).style.filter =
-    color === "red" ? "hue-rotate(0deg)" :
-    color === "blue" ? "hue-rotate(200deg)" :
-    color === "black" ? "brightness(0.3)" :
-    color === "white" ? "brightness(1.8)" :
-    color === "pink" ? "hue-rotate(300deg)" :
-    "hue-rotate(100deg)";
-}
+    .part-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
 
-function setMark(src) {
-  document.getElementById("markChest").src = src;
-}
+    .mark-layer {
+      position: absolute;
+      z-index: 3;
+      pointer-events: none;
+    }
 
-function setBackMark(src) {
-  document.getElementById("markBack").src = src;
-}
-</script>
+    .mark-layer img {
+      width: 100%;
+      display: block;
+    }
 
-<style>
-.canvas {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-}
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
 
-.canvas img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
+    .sub-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 18px 0 10px;
+    }
 
-.base {
-  position: relative;
-}
-</style>
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      border: 1px solid #ccc;
+      background: #f0f0f0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button.active {
+      background: #dbeafe;
+      border-color: #93c5fd;
+      color: #111;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #fff;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mark-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .preview-box {
+      background: #000;
+      border-radius: 12px;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+
+    .preview-box img {
+      max-width: 180px;
+      max-height: 90px;
+      width: auto;
+      height: auto;
+    }
+
+    .result {
+      white-space: pre-line;
+      line-height: 1.9;
+      font-size: 18px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 24px; }
+      .section-title { font-size: 20px; }
+      .sub-title { font-size: 17px; }
+      .form-grid,
+      .mark-box {
+        grid-template-columns: 1fr;
+      }
+      .result {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ウェットスーツシミュレーター</h1>
+
+    <div class="card">
+      <div class="viewer" id="viewer">
+        <img src="base.png" class="base-layer" alt="base">
+
+        <img id="partA" src="partA.png" class="part-layer" alt="partA">
+        <img id="partB" src="partB.png" class="part-layer" alt="partB">
+        <img id="partC" src="partC.png" class="part-layer" alt="partC">
+
+        <div id="chestMarkWrap" class="mark-layer" style="left: 22%; top: 27%; width: 10%;">
+          <img id="chestMarkImg" src="bms.png" alt="chest mark">
+        </div>
+
+        <div id="backMarkWrap" class="mark-layer" style="left: 72%; top: 30%; width: 12%;">
+          <img id="backMarkImg" src="bms.png" alt="back mark">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">お客様情報</div>
+      <div class="form-grid">
+        <div>
+          <div class="sub-title">名前</div>
+          <input id="customerName" type="text" placeholder="名前を入力">
+        </div>
+        <div>
+          <div class="sub-title">性別</div>
+          <select id="gender" onchange="renderResult()">
+            <option value="">選択してください</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Aカラー</div>
+      <div class="btn-row" id="aButtons"></div>
+
+      <div class="section-title" style="margin-top:20px;">Bカラー</div>
+      <div class="btn-row" id="bButtons"></div>
+
+      <div class="section-title" style="margin-top:20px;">Cカラー</div>
+      <div class="btn-row" id="cButtons"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">胸マーク</div>
+      <div class="mark-box">
+        <div>
+          <select id="chestMark" onchange="updateMarks()">
+            <option value="bms.png">bms</option>
+            <option value="biarms.png">biarms</option>
+            <option value="edgeb.png">edgeb</option>
+            <option value="letter.png">letter</option>
+          </select>
+        </div>
+        <div class="preview-box">
+          <img id="chestMarkPreview" src="bms.png" alt="chest preview">
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:20px;">背中マーク</div>
+      <div class="mark-box">
+        <div>
+          <select id="backMark" onchange="updateMarks()">
+            <option value="bms.png">bms</option>
+            <option value="biarms.png">biarms</option>
+            <option value="edgeb.png">edgeb</option>
+            <option value="letter.png">letter</option>
+          </select>
+        </div>
+        <div class="preview-box">
+          <img id="backMarkPreview" src="bms.png" alt="back preview">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">現在の設定</div>
+      <div id="result" class="result"></div>
+    </div>
+
+    <div class="card">
+      <div class="action-row">
+        <button type="button" onclick="saveSetting()">保存</button>
+        <button type="button" onclick="sendToLine()">LINE送信</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const colors = [
+      'ブラック','ホワイト','レッド','キャンディ','Kイエロー','Kオレンジ','オレンジ',
+      'ターコイズ','ロイヤル','ネイビー','ソリッドブルー','プラクシス',
+      'ブラウン','ダークグレイ','クールグレイ','オリーブ','ペブル','サンド',
+      'メランジBK','メランジ青','ベビーピンク','マルベリー','キラ','ピスタチオ'
+    ];
+
+    const state = {
+      A: 'ブラック',
+      B: 'ブラック',
+      C: 'ブラック'
+    };
+
+    const colorFilterMap = {
+      'ブラック': 'brightness(0.38) saturate(0.9)',
+      'ホワイト': 'brightness(1.45) saturate(0)',
+      'レッド': 'sepia(1) saturate(7) hue-rotate(-20deg) brightness(0.95)',
+      'キャンディ': 'sepia(1) saturate(8) hue-rotate(-35deg) brightness(1.05)',
+      'Kイエロー': 'sepia(1) saturate(8) hue-rotate(5deg) brightness(1.1)',
+      'Kオレンジ': 'sepia(1) saturate(8) hue-rotate(-5deg) brightness(1.05)',
+      'オレンジ': 'sepia(1) saturate(8) hue-rotate(0deg) brightness(1.0)',
+      'ターコイズ': 'sepia(1) saturate(6) hue-rotate(145deg) brightness(1.0)',
+      'ロイヤル': 'sepia(1) saturate(7) hue-rotate(175deg) brightness(0.95)',
+      'ネイビー': 'sepia(1) saturate(7) hue-rotate(190deg) brightness(0.65)',
+      'ソリッドブルー': 'sepia(1) saturate(7) hue-rotate(170deg) brightness(1.0)',
+      'プラクシス': 'sepia(1) saturate(7) hue-rotate(255deg) brightness(0.95)',
+      'ブラウン': 'sepia(1) saturate(4) hue-rotate(-10deg) brightness(0.8)',
+      'ダークグレイ': 'grayscale(1) brightness(0.6)',
+      'クールグレイ': 'grayscale(1) brightness(0.85)',
+      'オリーブ': 'sepia(1) saturate(4) hue-rotate(45deg) brightness(0.75)',
+      'ペブル': 'sepia(0.35) saturate(1.2) hue-rotate(20deg) brightness(0.95)',
+      'サンド': 'sepia(0.55) saturate(1.4) hue-rotate(10deg) brightness(1.02)',
+      'メランジBK': 'grayscale(1) contrast(1.1) brightness(0.5)',
+      'メランジ青': 'sepia(1) saturate(4) hue-rotate(180deg) brightness(0.85)',
+      'ベビーピンク': 'sepia(1) saturate(4) hue-rotate(-45deg) brightness(1.15)',
+      'マルベリー': 'sepia(1) saturate(5) hue-rotate(300deg) brightness(0.95)',
+      'キラ': 'brightness(1.2) contrast(1.05) saturate(1.15)',
+      'ピスタチオ': 'sepia(1) saturate(4) hue-rotate(65deg) brightness(1.05)'
+    };
+
+    function createColorButtons(targetId, partKey) {
+      const wrap = document.getElementById(targetId);
+      wrap.innerHTML = '';
+
+      colors.forEach(color => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = color;
+        btn.onclick = () => {
+          state[partKey] = color;
+          applyColors();
+          updateActiveButtons();
+          renderResult();
+        };
+        btn.dataset.part = partKey;
+        btn.dataset.color = color;
+        wrap.appendChild(btn);
+      });
+    }
+
+    function updateActiveButtons() {
+      document.querySelectorAll('button[data-part]').forEach(btn => {
+        const part = btn.dataset.part;
+        const color = btn.dataset.color;
+        btn.classList.toggle('active', state[part] === color);
+      });
+    }
+
+    function applyColors() {
+      document.getElementById('partA').style.filter = colorFilterMap[state.A] || 'none';
+      document.getElementById('partB').style.filter = colorFilterMap[state.B] || 'none';
+      document.getElementById('partC').style.filter = colorFilterMap[state.C] || 'none';
+    }
+
+    function updateMarks() {
+      const chest = document.getElementById('chestMark').value;
+      const back = document.getElementById('backMark').value;
+
+      document.getElementById('chestMarkImg').src = chest;
+      document.getElementById('backMarkImg').src = back;
+      document.getElementById('chestMarkPreview').src = chest;
+      document.getElementById('backMarkPreview').src = back;
+
+      renderResult();
+    }
+
+    function renderResult() {
+      const name = document.getElementById('customerName').value || '';
+      const gender = document.getElementById('gender').value || '';
+      const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
+      const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
+
+      document.getElementById('result').textContent =
+`名前：${name}
+性別：${gender}
+Aカラー：${state.A}
+Bカラー：${state.B}
+Cカラー：${state.C}
+胸マーク：${chestMark}
+背中マーク：${backMark}`;
+    }
+
+    function saveSetting() {
+      const saveData = {
+        name: document.getElementById('customerName').value,
+        gender: document.getElementById('gender').value,
+        A: state.A,
+        B: state.B,
+        C: state.C,
+        chestMark: document.getElementById('chestMark').value,
+        backMark: document.getElementById('backMark').value
+      };
+
+      localStorage.setItem('wetsuit-simulator-data', JSON.stringify(saveData));
+      alert('保存しました');
+    }
+
+    function loadSetting() {
+      const raw = localStorage.getItem('wetsuit-simulator-data');
+      if (!raw) return;
+
+      try {
+        const data = JSON.parse(raw);
+        document.getElementById('customerName').value = data.name || '';
+        document.getElementById('gender').value = data.gender || '';
+        state.A = data.A || 'ブラック';
+        state.B = data.B || 'ブラック';
+        state.C = data.C || 'ブラック';
+        document.getElementById('chestMark').value = data.chestMark || 'bms.png';
+        document.getElementById('backMark').value = data.backMark || 'bms.png';
+      } catch (e) {}
+    }
+
+    function sendToLine() {
+      const name = document.getElementById('customerName').value || '';
+      const gender = document.getElementById('gender').value || '';
+      const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
+      const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
+
+      const text =
+`【ウェットスーツシミュレーター】
+名前：${name}
+性別：${gender}
+Aカラー：${state.A}
+Bカラー：${state.B}
+Cカラー：${state.C}
+胸マーク：${chestMark}
+背中マーク：${backMark}`;
+
+      window.open('https://line.me/R/msg/text/?' + encodeURIComponent(text), '_blank');
+    }
+
+    document.getElementById('customerName').addEventListener('input', renderResult);
+
+    createColorButtons('aButtons', 'A');
+    createColorButtons('bButtons', 'B');
+    createColorButtons('cButtons', 'C');
+
+    loadSetting();
+    applyColors();
+    updateActiveButtons();
+    updateMarks();
+    renderResult();
+  </script>
+</body>
+</html>
