@@ -403,19 +403,21 @@
     }
 
     function setPartImage(partKey, colorName) {
-      const img = document.getElementById(`part${partKey}`);
-      const target = getPartFile(partKey, colorName);
-      const fallback = defaultPartFile[partKey];
+  const img = document.getElementById(`part${partKey}`);
+  const fileKey = fileColorMap[colorName];
+  if (!fileKey) return;
 
-      const testImg = new Image();
-      testImg.onload = () => {
-        img.src = target;
-      };
-      testImg.onerror = () => {
-        img.src = fallback;
-      };
-      testImg.src = target;
-    }
+  const target = `part${partKey}_${fileKey}.png`;
+
+  const testImg = new Image();
+  testImg.onload = () => {
+    img.src = target;
+  };
+  testImg.onerror = () => {
+    console.log("画像なし:", target);
+  };
+  testImg.src = target;
+}
 
     function createColorButtons(targetId, partKey) {
       const wrap = document.getElementById(targetId);
