@@ -201,7 +201,6 @@
   <div class="wrap">
     <h1>ウェットスーツシミュレーター</h1>
 
-    <!-- 1. ウェットスーツ画像 -->
     <div class="card">
       <div class="viewer">
         <img src="base.png" class="base-layer" alt="base">
@@ -210,37 +209,31 @@
         <img id="partB" src="partB_new.png" class="part-layer" alt="partB">
         <img id="partC" src="partC_new.png" class="part-layer" alt="partC">
 
-        <!-- 胸マーク -->
         <div id="chestMarkWrap" class="mark-layer" style="left:20.5%; top:16.8%; width:8.2%;">
           <img id="chestMarkImg" src="bms.png" alt="chest mark">
         </div>
 
-        <!-- 背中マーク -->
         <div id="backMarkWrap" class="mark-layer" style="left:71.2%; top:17.8%; width:8.4%;">
           <img id="backMarkImg" src="bms.png" alt="back mark">
         </div>
       </div>
     </div>
 
-    <!-- 2. Aカラー -->
     <div class="card">
       <div class="section-title">Aカラー</div>
       <div class="btn-row" id="aButtons"></div>
     </div>
 
-    <!-- 3. Bカラー -->
     <div class="card">
       <div class="section-title">Bカラー</div>
       <div class="btn-row" id="bButtons"></div>
     </div>
 
-    <!-- 4. Cカラー -->
     <div class="card">
       <div class="section-title">Cカラー</div>
       <div class="btn-row" id="cButtons"></div>
     </div>
 
-    <!-- 5. 胸マーク -->
     <div class="card">
       <div class="section-title">胸マーク</div>
       <div class="mark-box">
@@ -270,7 +263,6 @@
       </div>
     </div>
 
-    <!-- 6. 背中マーク -->
     <div class="card">
       <div class="section-title">背中マーク</div>
       <div class="mark-box">
@@ -300,7 +292,6 @@
       </div>
     </div>
 
-    <!-- 7. お客様情報 -->
     <div class="card">
       <div class="section-title">お客様情報</div>
       <div class="form-grid">
@@ -319,13 +310,11 @@
       </div>
     </div>
 
-    <!-- 8. 現在の設定 -->
     <div class="card">
       <div class="section-title">現在の設定</div>
       <div id="result" class="result"></div>
     </div>
 
-    <!-- 9. 保存・LINE送信 -->
     <div class="card">
       <div class="action-row">
         <button type="button" class="save-btn" onclick="saveSetting(); saveToSpreadsheet();">保存</button>
@@ -395,12 +384,6 @@
       silver: 'grayscale(1) brightness(1.3)',
       gold: 'sepia(1) saturate(6) hue-rotate(8deg) brightness(1.15)'
     };
-
-    function getPartFile(partKey, colorName) {
-      const fileKey = fileColorMap[colorName];
-      if (!fileKey) return defaultPartFile[partKey];
-      return `part${partKey}_${fileKey}.png`;
-    }
 
     function setPartImage(partKey, colorName) {
       const img = document.getElementById(`part${partKey}`);
@@ -511,40 +494,6 @@ Cカラー：${state.C}
       localStorage.setItem('wetsuit-simulator-data', JSON.stringify(saveData));
       alert('保存しました');
     }
-    async function saveToSpreadsheet() {
-  const payload = {
-    customerName: document.getElementById('customerName').value || '',
-    gender: document.getElementById('gender').value || '',
-    orderDate: new Date().toLocaleDateString('ja-JP'),
-
-    aBase: state.A || '',
-    bBase: state.B || '',
-    line: state.C || '',
-
-    rightLogoType: document.getElementById('chestMark').selectedOptions[0].textContent || '',
-rightLogoColor: document.getElementById('chestMarkColor').selectedOptions[0].textContent || '',
-
-backLogoType: document.getElementById('backMark').selectedOptions[0].textContent || '',
-backLogoColor: document.getElementById('backMarkColor').selectedOptions[0].textContent || ''
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDvWd9tRVLIYywW4KyWzlpgqguJ_NvvUGzMdZfQPV_0znyCVftwHJLyo4mcZ5yWg_C/exec';
-
-  const res = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8'
-    },
-    body: JSON.stringify(payload)
-  });
-
-  const json = await res.json();
-
-  if (!json.ok) {
-    alert('保存エラー: ' + json.error);
-    return;
-  }
-
-  alert('採寸表を作成しました');
-}
 
     function loadSetting() {
       const raw = localStorage.getItem('wetsuit-simulator-data');
@@ -564,10 +513,50 @@ backLogoColor: document.getElementById('backMarkColor').selectedOptions[0].textC
       } catch (e) {}
     }
 
+    async function saveToSpreadsheet() {
+      const payload = {
+        customerName: document.getElementById('customerName').value || '',
+        gender: document.getElementById('gender').value || '',
+        orderDate: new Date().toLocaleDateString('ja-JP'),
+
+        aBase: state.A || '',
+        bBase: state.B || '',
+        line: state.C || '',
+
+        rightLogoType: document.getElementById('chestMark').selectedOptions[0].textContent || '',
+        rightLogoColor: document.getElementById('chestMarkColor').selectedOptions[0].textContent || '',
+
+        backLogoType: document.getElementById('backMark').selectedOptions[0].textContent || '',
+        backLogoColor: document.getElementById('backMarkColor').selectedOptions[0].textContent || ''
+      };
+
+      const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDvWd9tRVLIYywW4KyWzlpgqguJ_NvvUGzMdZfQPV_0znyCVftwHJLyo4mcZ5yWg_C/exec';
+
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+
+        if (!json.ok) {
+          alert('保存エラー: ' + json.error);
+          return;
+        }
+
+        alert('採寸表を作成しました');
+      } catch (err) {
+        alert('保存エラー: ' + err.message);
+      }
+    }
+
     function sendToLine() {
       const name = document.getElementById('customerName').value || '';
       const gender = document.getElementById('gender').value || '';
-
       const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
       const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
       const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
