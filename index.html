@@ -530,28 +530,39 @@ Cカラー：${state.C}
     }
 
     function sendToLine() {
-      const name = document.getElementById('customerName').value || '';
-      const gender = document.getElementById('gender').value || '';
-      const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
-      const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
-      const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
-      const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
+  const name = document.getElementById('customerName').value || '';
+  const gender = document.getElementById('gender').value || '';
 
-      const text =
-`【ウェットスーツシミュレーター】
-名前：${name}
-性別：${gender}
-Aカラー：${state.A}
-Bカラー：${state.B}
-Cカラー：${state.C}
-胸マーク：${chestMark}
-胸マーク色：${chestMarkColor}
-背中マーク：${backMark}
-背中マーク色：${backMarkColor}`;
+  const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
+  const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
 
-      const url = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
-      window.open(url, '_blank');
-    }
+  const text =
+`【ウェットスーツオーダー】
+
+■日付
+${new Date().toLocaleDateString()}
+
+■名前
+${name}
+
+■性別
+${gender}
+
+■カラー
+A：${state.A}
+B：${state.B}
+C：${state.C}
+
+■マーク
+胸：${chestMark}
+背中：${backMark}
+
+――――――――――
+ブルーストーリー`;
+
+  const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
 
     document.getElementById('customerName').addEventListener('input', renderResult);
     document.getElementById('gender').addEventListener('change', renderResult);
