@@ -529,12 +529,16 @@ Cカラー：${state.C}
       } catch (e) {}
     }
 
-    function sendToLine() {
+   function sendToLine() {
   const name = document.getElementById('customerName').value || '';
   const gender = document.getElementById('gender').value || '';
 
   const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
   const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
+
+  // ★ これ追加（色）
+  const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
+  const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
 
   const text =
 `【ウェットスーツオーダー】
@@ -554,8 +558,8 @@ B：${state.B}
 C：${state.C}
 
 ■マーク
-胸：${chestMark}
-背中：${backMark}
+胸：${chestMark}（${chestMarkColor}）
+背中：${backMark}（${backMarkColor}）
 
 ――――――――――
 ブルーストーリー`;
