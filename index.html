@@ -511,6 +511,40 @@ Cカラー：${state.C}
       localStorage.setItem('wetsuit-simulator-data', JSON.stringify(saveData));
       alert('保存しました');
     }
+    async function saveToSpreadsheet() {
+  const payload = {
+    customerName: document.getElementById('customerName').value || '',
+    gender: document.getElementById('gender').value || '',
+    orderDate: new Date().toLocaleDateString('ja-JP'),
+
+    aBase: state.A || '',
+    bBase: state.B || '',
+    line: state.C || '',
+
+    rightLogoType: document.getElementById('chestMark').selectedOptions[0].textContent || '',
+rightLogoColor: document.getElementById('chestMarkColor').selectedOptions[0].textContent || '',
+
+backLogoType: document.getElementById('backMark').selectedOptions[0].textContent || '',
+backLogoColor: document.getElementById('backMarkColor').selectedOptions[0].textContent || ''
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwDvWd9tRVLIYywW4KyWzlpgqguJ_NvvUGzMdZfQPV_0znyCVftwHJLyo4mcZ5yWg_C/exec';
+
+  const res = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const json = await res.json();
+
+  if (!json.ok) {
+    alert('保存エラー: ' + json.error);
+    return;
+  }
+
+  alert('採寸表を作成しました');
+}
 
     function loadSetting() {
       const raw = localStorage.getItem('wetsuit-simulator-data');
