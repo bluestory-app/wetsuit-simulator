@@ -403,21 +403,22 @@
     }
 
     function setPartImage(partKey, colorName) {
-  const img = document.getElementById(`part${partKey}`);
-  const fileKey = fileColorMap[colorName];
-  if (!fileKey) return;
+      const img = document.getElementById(`part${partKey}`);
+      const fileKey = fileColorMap[colorName];
+      if (!fileKey) return;
 
-  const target = `part${partKey}_${fileKey}.png`;
+      const target = `part${partKey}_${fileKey}.png`;
+      const fallback = defaultPartFile[partKey];
 
-  const testImg = new Image();
-  testImg.onload = () => {
-    img.src = target;
-  };
-  testImg.onerror = () => {
-    console.log("画像なし:", target);
-  };
-  testImg.src = target;
-}
+      const testImg = new Image();
+      testImg.onload = () => {
+        img.src = target;
+      };
+      testImg.onerror = () => {
+        img.src = fallback;
+      };
+      testImg.src = target;
+    }
 
     function createColorButtons(targetId, partKey) {
       const wrap = document.getElementById(targetId);
@@ -529,18 +530,16 @@ Cカラー：${state.C}
       } catch (e) {}
     }
 
-   function sendToLine() {
-  const name = document.getElementById('customerName').value || '';
-  const gender = document.getElementById('gender').value || '';
+    function sendToLine() {
+      const name = document.getElementById('customerName').value || '';
+      const gender = document.getElementById('gender').value || '';
 
-  const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
-  const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
+      const chestMark = document.getElementById('chestMark').selectedOptions[0].textContent;
+      const backMark = document.getElementById('backMark').selectedOptions[0].textContent;
+      const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
+      const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
 
-  // ★ これ追加（色）
-  const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
-  const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
-
-  const text =
+      const text =
 `【ウェットスーツオーダー】
 
 ■日付
@@ -564,9 +563,9 @@ C：${state.C}
 ――――――――――
 ブルーストーリー`;
 
-  const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
-  window.open(url, '_blank');
-}
+      const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
+      window.open(url, '_blank');
+    }
 
     document.getElementById('customerName').addEventListener('input', renderResult);
     document.getElementById('gender').addEventListener('change', renderResult);
