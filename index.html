@@ -562,7 +562,7 @@ Cカラー：${state.C}
       const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
       const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
 
-      const text =
+const text =
 `【ウェットスーツオーダー】
 
 ■日付
@@ -585,7 +585,7 @@ C：${state.C}
 
 ――――――――――
 ブルーストーリー`;
-
+      
       const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
       window.open(url, '_blank');
     }
