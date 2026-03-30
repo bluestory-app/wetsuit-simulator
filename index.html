@@ -205,16 +205,16 @@
       <div class="viewer">
         <img src="base.png" class="base-layer" alt="base">
 
-        <img id="partA" src="partA_new.png" class="part-layer" alt="partA">
-        <img id="partB" src="partB_new.png" class="part-layer" alt="partB">
-        <img id="partC" src="partC_new.png" class="part-layer" alt="partC">
+        <img id="partA" src="partA_black.png" class="part-layer" alt="partA">
+        <img id="partB" src="partB_black.png" class="part-layer" alt="partB">
+        <img id="partC" src="partC_black.png" class="part-layer" alt="partC">
 
         <div id="chestMarkWrap" class="mark-layer" style="left:20.5%; top:16.8%; width:8.2%;">
-          <img id="chestMarkImg" src="bms.png" alt="chest mark">
+          <img id="chestMarkImg" src="bms_white.png" alt="chest mark">
         </div>
 
         <div id="backMarkWrap" class="mark-layer" style="left:71.2%; top:17.8%; width:8.4%;">
-          <img id="backMarkImg" src="bms.png" alt="back mark">
+          <img id="backMarkImg" src="bms_white.png" alt="back mark">
         </div>
       </div>
     </div>
@@ -239,10 +239,10 @@
       <div class="mark-box">
         <div>
           <select id="chestMark" onchange="updateMarks()">
-            <option value="bms.png">bms</option>
-            <option value="biarms.png">biarms</option>
-            <option value="edgeb.png">edgeb</option>
-            <option value="letter.png">letter</option>
+            <option value="bms">bms</option>
+            <option value="biarms">biarms</option>
+            <option value="edgeb">edgeb</option>
+            <option value="letter">letter</option>
           </select>
 
           <div class="sub-title">胸マーク色</div>
@@ -258,7 +258,7 @@
           </select>
         </div>
         <div class="preview-box">
-          <img id="chestMarkPreview" src="bms.png" alt="chest preview">
+          <img id="chestMarkPreview" src="bms_white.png" alt="chest preview">
         </div>
       </div>
     </div>
@@ -268,10 +268,10 @@
       <div class="mark-box">
         <div>
           <select id="backMark" onchange="updateMarks()">
-            <option value="bms.png">bms</option>
-            <option value="biarms.png">biarms</option>
-            <option value="edgeb.png">edgeb</option>
-            <option value="letter.png">letter</option>
+            <option value="bms">bms</option>
+            <option value="biarms">biarms</option>
+            <option value="edgeb">edgeb</option>
+            <option value="letter">letter</option>
           </select>
 
           <div class="sub-title">背中マーク色</div>
@@ -287,7 +287,7 @@
           </select>
         </div>
         <div class="preview-box">
-          <img id="backMarkPreview" src="bms.png" alt="back preview">
+          <img id="backMarkPreview" src="bms_white.png" alt="back preview">
         </div>
       </div>
     </div>
@@ -321,8 +321,7 @@
         <button type="button" class="line-btn" onclick="sendToLine()">LINE送信</button>
       </div>
       <div class="note">
-        色画像が未作成の色は、自動で現在の `_new.png` に戻ります。<br>
-        画像を追加した色から順番に本番反映されます。
+        保存すると、ローカル保存と採寸表作成を同時に行います。
       </div>
     </div>
   </div>
@@ -331,8 +330,8 @@
     const colors = [
       'ブラック','ホワイト','レッド','キャンディ','Kイエロー','Kオレンジ',
       'ターコイズ','ロイヤル','ネイビー','ソリッドブルー',
-      'ブラウン','ダークグレイ','クールグレイ','オリーブ','サンド',
-      'ベビーピンク','マルベリー','キラ','ピスタチオ'
+      'ブラウン','ダークグレイ','クールグレイ','オリーブ','ペブル','サンド',
+      'メランジBK','メランジ青','ベビーピンク','マルベリー','キラ','ピスタチオ'
     ];
 
     const fileColorMap = {
@@ -350,11 +349,31 @@
       'ダークグレイ': 'darkgray',
       'クールグレイ': 'coolgray',
       'オリーブ': 'olive',
+      'ペブル': 'pebble',
       'サンド': 'sand',
+      'メランジBK': 'melangebk',
+      'メランジ青': 'melangeblue',
       'ベビーピンク': 'babypink',
       'マルベリー': 'mulberry',
       'キラ': 'kira',
       'ピスタチオ': 'pistachio'
+    };
+
+    const bmsColorMap = {
+      black: 'bms_black.png',
+      white: 'bms_white.png',
+      red: 'bms_red.png',
+      blue: 'bms_blue.png',
+      yellow: 'bms_yellow.png',
+      pink: 'bms_pink.png',
+      silver: 'bms_silver.png',
+      gold: 'bms_gold.png'
+    };
+
+    const fixedMarkMap = {
+      biarms: 'biarms.png',
+      edgeb: 'edgeb.png',
+      letter: 'letter.png'
     };
 
     const state = {
@@ -363,39 +382,13 @@
       C: 'ブラック'
     };
 
-    const defaultPartFile = {
-      A: 'partA_new.png',
-      B: 'partB_new.png',
-      C: 'partC_new.png'
-    };
-
-    const markFilterMap = {
-      white: 'brightness(0) invert(1)',
-      black: 'brightness(0)',
-      red: 'sepia(1) saturate(7) hue-rotate(-20deg) brightness(0.95)',
-      blue: 'sepia(1) saturate(7) hue-rotate(170deg) brightness(1.0)',
-      yellow: 'sepia(1) saturate(8) hue-rotate(5deg) brightness(1.1)',
-      pink: 'sepia(1) saturate(4) hue-rotate(-45deg) brightness(1.15)',
-      silver: 'grayscale(1) brightness(1.3)',
-      gold: 'sepia(1) saturate(6) hue-rotate(8deg) brightness(1.15)'
-    };
-
     function setPartImage(partKey, colorName) {
       const img = document.getElementById(`part${partKey}`);
       const fileKey = fileColorMap[colorName];
       if (!fileKey) return;
 
       const target = `part${partKey}_${fileKey}.png`;
-      const fallback = defaultPartFile[partKey];
-
-      const testImg = new Image();
-      testImg.onload = () => {
-        img.src = target;
-      };
-      testImg.onerror = () => {
-        img.src = fallback;
-      };
-      testImg.src = target;
+      img.src = target;
     }
 
     function createColorButtons(targetId, partKey) {
@@ -429,26 +422,26 @@
       });
     }
 
+    function getMarkSrc(markName, colorName) {
+      if (markName === 'bms') {
+        return bmsColorMap[colorName] || 'bms_white.png';
+      }
+      return fixedMarkMap[markName] || 'bms_white.png';
+    }
+
     function updateMarks() {
-      const chest = document.getElementById('chestMark').value;
-      const back = document.getElementById('backMark').value;
+      const chestMark = document.getElementById('chestMark').value;
+      const backMark = document.getElementById('backMark').value;
       const chestColor = document.getElementById('chestMarkColor').value;
       const backColor = document.getElementById('backMarkColor').value;
 
-      const chestImg = document.getElementById('chestMarkImg');
-      const backImg = document.getElementById('backMarkImg');
-      const chestPreview = document.getElementById('chestMarkPreview');
-      const backPreview = document.getElementById('backMarkPreview');
+      const chestSrc = getMarkSrc(chestMark, chestColor);
+      const backSrc = getMarkSrc(backMark, backColor);
 
-      chestImg.src = chest;
-      backImg.src = back;
-      chestPreview.src = chest;
-      backPreview.src = back;
-
-      chestImg.style.filter = markFilterMap[chestColor] || 'none';
-      backImg.style.filter = markFilterMap[backColor] || 'none';
-      chestPreview.style.filter = markFilterMap[chestColor] || 'none';
-      backPreview.style.filter = markFilterMap[backColor] || 'none';
+      document.getElementById('chestMarkImg').src = chestSrc;
+      document.getElementById('backMarkImg').src = backSrc;
+      document.getElementById('chestMarkPreview').src = chestSrc;
+      document.getElementById('backMarkPreview').src = backSrc;
 
       renderResult();
     }
@@ -501,8 +494,8 @@ Cカラー：${state.C}
         state.A = data.A || 'ブラック';
         state.B = data.B || 'ブラック';
         state.C = data.C || 'ブラック';
-        document.getElementById('chestMark').value = data.chestMark || 'bms.png';
-        document.getElementById('backMark').value = data.backMark || 'bms.png';
+        document.getElementById('chestMark').value = data.chestMark || 'bms';
+        document.getElementById('backMark').value = data.backMark || 'bms';
         document.getElementById('chestMarkColor').value = data.chestMarkColor || 'white';
         document.getElementById('backMarkColor').value = data.backMarkColor || 'white';
       } catch (e) {}
@@ -557,7 +550,7 @@ Cカラー：${state.C}
       const chestMarkColor = document.getElementById('chestMarkColor').selectedOptions[0].textContent;
       const backMarkColor = document.getElementById('backMarkColor').selectedOptions[0].textContent;
 
-const text =
+      const text =
 `【ウェットスーツオーダー】
 
 ■日付
@@ -580,7 +573,7 @@ C：${state.C}
 
 ――――――――――
 ブルーストーリー`;
-      
+
       const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
       window.open(url, '_blank');
     }
