@@ -574,8 +574,7 @@ C：${state.C}
 ――――――――――
 ブルーストーリー`;
 
-      const confirmMessage =
-`この内容で送りますか？
+      const confirmMessage = `この内容で送りますか？
 
 名前：${name}
 性別：${gender}
@@ -588,7 +587,6 @@ C：${state.C}
 if (!confirm(confirmMessage)) {
   return;
 }
-
       const url = "https://line.me/R/msg/text/?" + encodeURIComponent(text);
       window.open(url, '_blank');
     }
