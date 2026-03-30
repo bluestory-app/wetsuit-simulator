@@ -467,6 +467,19 @@ Cカラー：${state.C}
     }
 
     function saveSetting() {
+     const confirmMessage = `この内容で保存しますか？
+
+名前：${document.getElementById('customerName').value}
+性別：${document.getElementById('gender').value}
+A：${state.A}
+B：${state.B}
+C：${state.C}
+胸：${document.getElementById('chestMark').selectedOptions[0].textContent}
+背中：${document.getElementById('backMark').selectedOptions[0].textContent}`;
+if (!confirm(confirmMessage)) {
+  return;
+}
+      
       const saveData = {
         name: document.getElementById('customerName').value,
         gender: document.getElementById('gender').value,
